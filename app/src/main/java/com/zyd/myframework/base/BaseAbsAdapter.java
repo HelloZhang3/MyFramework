@@ -11,10 +11,11 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 
 /**
- * skin
+ * 普通列表适配器基类
  */
 public abstract class BaseAbsAdapter<T> extends BaseAdapter implements OnScrollListener {
 
+	//数据源
 	protected List<T> mDataSource = new ArrayList<T>();
 	protected Context mContext;
 	protected LayoutInflater mInflater;
@@ -44,7 +45,7 @@ public abstract class BaseAbsAdapter<T> extends BaseAdapter implements OnScrollL
 	 * 
 	 * @param dataList
 	 *            data
-	 * @param flag
+	 * @param isClear
 	 *            是否需要清空list然后在加载数据
 	 */
 	public void update(List<T> dataList, Boolean isClear) {
@@ -115,7 +116,11 @@ public abstract class BaseAbsAdapter<T> extends BaseAdapter implements OnScrollL
 	public void clear() {
 		mDataSource.clear();
 	}
-	
+
+	/**
+	 * 执行跳转
+	 * @param cls
+     */
 	public void startIntent(Class<?> cls){
 		Intent intent = new Intent(mContext, cls);
 		mContext.startActivity(intent);
@@ -151,6 +156,7 @@ public abstract class BaseAbsAdapter<T> extends BaseAdapter implements OnScrollL
 		// 设置是否滚动的状态
 		if (scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
 			isScrolling = false;
+			//空闲状态时刷新数据
 			this.notifyDataSetChanged();
 		} else {
 			isScrolling = true;
