@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MyFramework</string>
+
+    <string name="log_copy">复制</string>
+    <string name="log_sure">确定</string>
+    <string name="log_cancel">取消</string>
+    <string name="success_copy">已经复制到剪切板</string>
+
 </resources>

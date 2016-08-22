@@ -22,6 +22,7 @@ public class BaseApplacation extends Application {
 
     /**
      * 得到BaseApplacation的实例
+     *
      * @return
      */
     public static BaseApplacation getInstance() {
