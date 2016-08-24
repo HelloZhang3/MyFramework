@@ -1,6 +1,7 @@
 package com.zyd.myframework.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -92,5 +93,91 @@ public abstract class BaseFragment extends Fragment{
     public void onDestroy() {
         Log.d("TAG", "onDestroy() : ");
         super.onDestroy();
+    }
+
+
+    /**
+     * startActivity
+     *
+     * @param clazz
+     */
+    protected void readyGo(Class<?> clazz) {
+        Intent intent = new Intent(getActivity(), clazz);
+        startActivity(intent);
+    }
+
+    protected void readyGo(Class<?> clazz, Intent intent) {
+        intent.setClass(getActivity(), clazz);
+        startActivity(intent);
+    }
+
+    protected void readyGo(Intent intent) {
+        startActivity(intent);
+    }
+
+    /**
+     * startActivity with bundle
+     *
+     * @param clazz
+     * @param bundle
+     */
+    protected void readyGo(Class<?> clazz, Bundle bundle) {
+        Intent intent = new Intent(getActivity(), clazz);
+        if (null != bundle) {
+            intent.putExtras(bundle);
+        }
+        startActivity(intent);
+    }
+
+    /**
+     * startActivity then finish
+     *
+     * @param clazz
+     */
+    protected void readyGoThenKill(Class<?> clazz) {
+        Intent intent = new Intent(getActivity(), clazz);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+    /**
+     * startActivity with bundle then finish
+     *
+     * @param clazz
+     * @param bundle
+     */
+    protected void readyGoThenKill(Class<?> clazz, Bundle bundle) {
+        Intent intent = new Intent(getActivity(), clazz);
+        if (null != bundle) {
+            intent.putExtras(bundle);
+        }
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+    /**
+     * startActivityForResult
+     *
+     * @param clazz
+     * @param requestCode
+     */
+    protected void readyGoForResult(Class<?> clazz, int requestCode) {
+        Intent intent = new Intent(getActivity(), clazz);
+        startActivityForResult(intent, requestCode);
+    }
+
+    /**
+     * startActivityForResult with bundle
+     *
+     * @param clazz
+     * @param requestCode
+     * @param bundle
+     */
+    protected void readyGoForResult(Class<?> clazz, int requestCode, Bundle bundle) {
+        Intent intent = new Intent(getActivity(), clazz);
+        if (null != bundle) {
+            intent.putExtras(bundle);
+        }
+        startActivityForResult(intent, requestCode);
     }
 }
