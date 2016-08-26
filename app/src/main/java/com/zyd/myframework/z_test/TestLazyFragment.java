@@ -14,11 +14,13 @@ public class TestLazyFragment extends BaseLazyFragment {
 
     @Override
     protected void onCreateView(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_main);
+        setOnContentView(R.layout.activity_main);
 
         isPrepared = true;
         lazyLoad();
     }
+
+
 
     @Override
     protected void lazyLoad() {

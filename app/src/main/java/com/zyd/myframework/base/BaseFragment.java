@@ -2,12 +2,15 @@ package com.zyd.myframework.base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.zyd.myframework.interf.OnFragmentInteractionListener;
 
 import java.lang.reflect.Field;
 
@@ -17,16 +20,29 @@ import java.lang.reflect.Field;
  * Date: 2016/8/22  11:14
  * E-mail: zhangyadong@rockmobile.com.cn
  */
-public abstract class BaseFragment extends Fragment{
+public abstract class BaseFragment extends Fragment {
     protected LayoutInflater inflater;
     private View contentView;
     private Context context;
     private ViewGroup container;
+    private OnFragmentInteractionListener mFragmentInteractionListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getActivity().getApplicationContext();
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mFragmentInteractionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     //子类通过重写onCreateView，调用setOnContentView进行布局设置，否则contentView==null，返回null
@@ -35,8 +51,10 @@ public abstract class BaseFragment extends Fragment{
         this.inflater = inflater;
         this.container = container;
         onCreateView(savedInstanceState);
-        if (contentView == null)
-            return super.onCreateView(inflater, container, savedInstanceState);
+        if (contentView == null) {
+//            return super.onCreateView(inflater, container, savedInstanceState);
+            throw new RuntimeException("ChildFragment must overwrite: setOnContentView()!");
+        }
         return contentView;
     }
 
@@ -50,26 +68,37 @@ public abstract class BaseFragment extends Fragment{
         inflater = null;
     }
 
+    //得到Context
     public Context getApplicationContext() {
         return context;
     }
 
-    public void setContentView(int layoutResID) {
-        setContentView((ViewGroup) inflater.inflate(layoutResID, container, false));
+    //设置layout
+    public void setOnContentView(int layoutResID) {
+        contentView = (ViewGroup) inflater.inflate(layoutResID, container, false);
     }
 
-    public void setContentView(View view) {
-        contentView = view;
-    }
-
+    //获得contentView
     public View getContentView() {
         return contentView;
     }
 
+    //代替fragment中view.findVIewById()
     public View findViewById(int id) {
         if (contentView != null)
             return contentView.findViewById(id);
         return null;
+    }
+
+    /**
+     * 回调宿主Activity函数
+     *
+     * @param uri
+     */
+    public void callBackHostActivity(Uri uri) {
+        if (mFragmentInteractionListener != null) {
+            mFragmentInteractionListener.onFragmentInteraction(uri);
+        }
     }
 
     // http://stackoverflow.com/questions/15207305/getting-the-error-java-lang-illegalstateexception-activity-has-been-destroyed
@@ -77,6 +106,7 @@ public abstract class BaseFragment extends Fragment{
     public void onDetach() {
         Log.d("TAG", "onDetach() : ");
         super.onDetach();
+        mFragmentInteractionListener = null;
         try {
             Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
             childFragmentManager.setAccessible(true);
@@ -94,7 +124,6 @@ public abstract class BaseFragment extends Fragment{
         Log.d("TAG", "onDestroy() : ");
         super.onDestroy();
     }
-
 
     /**
      * startActivity
